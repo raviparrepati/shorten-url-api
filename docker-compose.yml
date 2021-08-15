@@ -1,0 +1,33 @@
+version: "3"
+services:
+  api-server:
+    container_name: shortenurlapi-service
+    build:
+      context: .
+      dockerfile: api.Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqlurldb:3306/urldb
+    ports:
+      - "8080:8080"
+    networks:
+      - shortenurlapi-mysql-network
+    depends_on:
+      - api-db
+
+  api-db:
+    container_name: mysqlurldb
+    build:
+      context: .
+      dockerfile: db.Dockerfile
+    networks:
+      - shortenurlapi-mysql-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=pa55w0rd
+      - MYSQL_DATABASE=urldb
+      - MYSQL_USER=shortenurlapi
+      - MYSQL_PASSWORD=123456
+    ports:
+      - '3306:3306'
+
+networks:
+  shortenurlapi-mysql-network:
